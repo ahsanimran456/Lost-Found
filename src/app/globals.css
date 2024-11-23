@@ -19,3 +19,24 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+@keyframes zoomGradientToWhite {
+  0% {
+    transform: scale(1); /* Normal size */
+  }
+  50% {
+    transform: scale(1.1); /* Zoom in */
+  }
+  80% {
+    transform: scale(1); /* Zoom out */
+  }
+  100% {
+    transform: scale(1); /* Final normal size */
+  
+  }
+}
+
+.animate-zoom-gradient {
+  animation: zoomGradientToWhite 4s infinite; /* 3 seconds, ends with final state */
+}
