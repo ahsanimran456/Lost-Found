@@ -40,3 +40,18 @@ body {
 .animate-zoom-gradient {
   animation: zoomGradientToWhite 4s infinite; /* 3 seconds, ends with final state */
 }
+
+@keyframes slide-up-slow {
+  0% {
+      transform: translateY(100px);
+      opacity: 0;
+  }
+  100% {
+      transform: translateY(0);
+      opacity: 1;
+  }
+}
+
+.animate-slide-up-slow {
+  animation: slide-up-slow 1s ease-out forwards;
+}
