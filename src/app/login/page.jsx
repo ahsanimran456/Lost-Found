@@ -1,32 +1,56 @@
 'use client';
 import React, { useState } from "react";
-import { FaGoogle } from "react-icons/fa"; // Google icon from react-icons
-import { auth } from "../firebase"; // Import Firebase config
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth"; // Firebase auth methods
-// import { useRouter } from "next/router"; // for redirecting after login
+import { FaGoogle } from "react-icons/fa";
+import { auth } from "../firebase"; // Firebase configuration
+import {
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-//   const router = useRouter();
+  const router = useRouter();
 
   const handleLogin = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-    //   router.push("/dashboard"); 
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Check if the email is verified
+      if (!user.emailVerified) {
+        toast.error("Email not verified. Please verify your email to continue.");
+        // Send verification email
+        await sendEmailVerification(user);
+        toast.success("Verification email sent. Please check your inbox.");
+        return; // Stop the login process until email is verified
+      }
+
+      // If verified, redirect to home
+      toast.success("Login successful!");
+      router.push("/home");
     } catch (err) {
-      setError("Invalid credentials");
+      if (err.code === "auth/user-not-found") {
+        toast.error("No user found with this email.");
+      } else if (err.code === "auth/wrong-password") {
+        toast.error("Incorrect password. Please try again.");
+      } else if (err.code === "auth/invalid-email") {
+        toast.error("Invalid email format. Please check and try again.");
+      } 
     }
   };
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
-     const response = await signInWithPopup(auth, provider);
-     console.log(response,"response");
-     
-    //   router.push("/dashboard"); // redirect to dashboard after successful Google login
+      const response = await signInWithPopup(auth, provider);
+      toast.success("Google login successful!");
+      router.push("/home");
     } catch (err) {
       setError("Google login failed");
     }
@@ -34,7 +58,7 @@ const LoginScreen = () => {
 
   return (
     <div className="h-screen bg-gradient-to-r from-indigo-500 to-purple-700 flex flex-col items-center justify-center px-6 py-8 relative overflow-hidden">
-      {/* Center Section (Main Image and Title) */}
+      {/* Center Section */}
       <div className="flex flex-col items-center gap-6 mb-12 z-10" style={{ marginTop: "-125%" }}>
         <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-xl">
           <img
@@ -85,12 +109,6 @@ const LoginScreen = () => {
             <FaGoogle className="text-xl" />
             <span>Sign in with Google</span>
           </button>
-
-          <div className="text-center mt-4">
-            <a href="#" className="text-pink-600 text-sm hover:underline">
-              Forgot Password?
-            </a>
-          </div>
         </div>
       </div>
     </div>
