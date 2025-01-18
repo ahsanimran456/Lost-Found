@@ -1,118 +1,3 @@
-// 'use client';
-// import React, { useState } from "react";
-// import { FaGoogle } from "react-icons/fa"; // Google icon from react-icons
-// import { auth } from "../firebase"; // Import Firebase config
-// import { createUserWithEmailAndPassword,sendEmailVerification, signInWithPopup, GoogleAuthProvider } from "firebase/auth"; // Firebase auth methods
-// import { useRouter } from "next/navigation";  // for redirecting after login
-// import toast from "react-hot-toast";
-
-// const SignupScreen = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [error, setError] = useState("");
-//   const router = useRouter();
-
-//   const handleSignup = async () => {
-//     try {
-//     const response =  await createUserWithEmailAndPassword(auth, email, password);
-//     console.log(response,"response");
-//         if(response?.user){
-//          toast.success('Please verify your email');
-//         //  const userVerfication = await sendEmailVerification(response.user); 
-//          console.log(userVerfication,"userVerfication");
-//             // router.push('/pincode')
-//         }
-//     //   router.push("/dashboard"); 
-//     } catch (err) {
-//       setError("Invalid credentials");
-//       console.log(err.message,"errerr");
-//       if(err.message=='page.jsx:28 Firebase: Error (auth/email-already-in-use).'){
-//           toast.error('Email already in use');
-//       }else{
-//           toast.error(err.message);
-//       }
-//     }
-//   };
-
-//   const handleGoogleLogin = async () => {
-//     const provider = new GoogleAuthProvider();
-//     try {
-//      const response = await signInWithPopup(auth, provider);
-//      console.log(response,"response");
-     
-//     //   router.push("/dashboard"); // redirect to dashboard after successful Google login
-//     } catch (err) {
-//       setError("Google login failed");
-//     }
-//   };
-
-//   return (
-//     <div className="h-screen bg-gradient-to-r from-indigo-500 to-purple-700 flex flex-col items-center justify-center px-6 py-8 relative overflow-hidden">
-//       {/* Center Section (Main Image and Title) */}
-//       <div className="flex flex-col items-center gap-6 mb-12 z-10" style={{ marginTop: "-125%" }}>
-//         <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-xl">
-//           <img
-//             src="/splash3.jpeg"
-//             alt="Main Building"
-//             className="object-cover w-full h-full"
-//           />
-//         </div>
-//         <h1 className="text-3xl font-bold text-white text-center bg-gradient-to-r from-pink-400 to-orange-500 p-4 rounded-lg shadow-lg">
-//           SignUp TO CAMPUS LOST & FOUND
-//         </h1>
-//       </div>
-
-//       {/* Form Section */}
-//       <div className="w-full max-w-lg bg-white bg-opacity-90 absolute bottom-0 rounded-t-3xl p-8 shadow-xl transform translate-y-16 opacity-0 animate-slide-up-slow">
-//         <div className="flex flex-col gap-6">
-//           <input
-//             type="email"
-//             placeholder="Email"
-//             value={email}
-//             onChange={(e) => setEmail(e.target.value)}
-//             className="w-full bg-transparent border-2 border-gray-300 text-lg text-gray-700 py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-600 transition duration-300"
-//           />
-
-//           <input
-//             type="password"
-//             placeholder="Password"
-//             value={password}
-//             onChange={(e) => setPassword(e.target.value)}
-//             className="w-full bg-transparent border-2 border-gray-300 text-lg text-gray-700 py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-600 transition duration-300"
-//           />
-
-//           {/* Error Message */}
-//           {error && <div className="text-red-500 text-sm">{error}</div>}
-
-//           <button
-//             onClick={handleSignup}
-//             className="w-full bg-pink-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-pink-700 transition duration-300 ease-in-out transform hover:scale-105"
-//           >
-//             Sign Up
-//           </button>
-
-//           {/* Google Login Button */}
-//           <button
-//             onClick={handleGoogleLogin}
-//             className="w-full flex items-center justify-center gap-4 py-3 rounded-lg bg-[#4285F4] text-white font-semibold text-lg shadow-lg hover:bg-[#357ae8] transition duration-300 ease-in-out transform hover:scale-105"
-//           >
-//             <FaGoogle className="text-xl" />
-//             <span>Sign in with Google</span>
-//           </button>
-
-//           <div className="text-center mt-4">
-//             <a href="#" className="text-pink-600 text-sm hover:underline">
-//               Forgot Password?
-//             </a>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default SignupScreen;
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaGoogle } from "react-icons/fa";
@@ -147,11 +32,11 @@ const SignupScreen = () => {
             if (user.emailVerified) {
               setEmailVerified(true);
               toast.success("Email verified successfully!");
-              router.push("/home");
+              router.push("/profile");
               clearInterval(interval);
             }
-          }, 3000); // Check every 3 seconds
-          return () => clearInterval(interval); // Cleanup
+          }, 3000);
+          return () => clearInterval(interval); 
         }
       }
     });
@@ -160,9 +45,10 @@ const SignupScreen = () => {
 
   const saveUserDataToFirestore = async (user) => {
     try {
-      const userRef = doc(db, "users", user.uid); // Reference to Firestore document
+      const userRef = doc(db, "users", user.uid); 
       await setDoc(userRef, {
         email: user.email,
+        uid: user.uid,
         createdAt: new Date(),
       });
     } catch (err) {
@@ -177,9 +63,10 @@ const SignupScreen = () => {
       const response = await createUserWithEmailAndPassword(auth, email, password);
       if (response?.user) {
         setUser(response.user);
-        toast.success("Signup successful! Please verify your email.");
+        toast.success("Signup successful! Please verify your email.", { duration: 5000 });
+        localStorage.setItem("user", JSON.stringify(response.user));
         await sendEmailVerification(response.user);
-        await saveUserDataToFirestore(response.user); // Save user data to Firestore
+        await saveUserDataToFirestore(response.user); 
       }
     } catch (err) {
       if (err.message.includes("auth/email-already-in-use")) {
@@ -200,12 +87,13 @@ const SignupScreen = () => {
       if (response?.user) {
         if (response.user.emailVerified) {
           toast.success("Login successful!");
-          router.push("/home");
+          router.push("/profile");
         } else {
           toast.info("Please verify your email before proceeding.");
         }
+        localStorage.setItem("user", JSON.stringify(response.user));
         setUser(response.user);
-        await saveUserDataToFirestore(response.user); // Save Google user data to Firestore
+        await saveUserDataToFirestore(response.user); 
       }
     } catch (err) {
       toast.error("Google login failed.");

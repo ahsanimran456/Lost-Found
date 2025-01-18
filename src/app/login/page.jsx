@@ -28,7 +28,7 @@ const LoginScreen = () => {
         // Send verification email
         await sendEmailVerification(user);
         toast.success("Verification email sent. Please check your inbox.");
-        return; // Stop the login process until email is verified
+        return; 
       }
 
       // If verified, redirect to home
@@ -41,7 +41,10 @@ const LoginScreen = () => {
         toast.error("Incorrect password. Please try again.");
       } else if (err.code === "auth/invalid-email") {
         toast.error("Invalid email format. Please check and try again.");
-      } 
+      }
+      else {
+        toast.error("Login failed. Please try again.");
+      }
     }
   };
 
@@ -49,6 +52,8 @@ const LoginScreen = () => {
     const provider = new GoogleAuthProvider();
     try {
       const response = await signInWithPopup(auth, provider);
+      const user = response.user;
+      localStorage.setItem("user", JSON.stringify(response.user));
       toast.success("Google login successful!");
       router.push("/home");
     } catch (err) {

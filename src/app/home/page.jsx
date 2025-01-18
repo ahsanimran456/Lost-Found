@@ -1,24 +1,24 @@
-import React from 'react'
+import React from 'react';
+import { FaWallet, FaPhone, FaKey, FaBook, FaTshirt, FaHatCowboy, FaGlasses } from 'react-icons/fa';
+import { IoBagCheckOutline } from 'react-icons/io5';
+import { MdWatch } from 'react-icons/md';
 import NavigationBar from '../components/bottomNavigation';
 
 const page = () => {
-    const items = [
-        { id: 1, name: 'Lost Item', status: 'Lost', icon: '🎒' },
-        { id: 2, name: 'ID Card', status: 'Lost and Found', icon: '🆔' },
-        { id: 3, name: 'Found Notebook', status: 'Found', icon: '📓' },
-        { id: 4, name: 'Lost Wallet', status: 'Lost', icon: '👛' },
-        { id: 5, name: 'Found Watch', status: 'Found', icon: '⏰' },
-        { id: 6, name: 'Lost Phone', status: 'Lost', icon: '📱' },
-        { id: 7, name: 'Found Glasses', status: 'Found', icon: '👓' },
-        { id: 8, name: 'Lost Keys', status: 'Lost', icon: '🔑' },
-        { id: 9, name: 'Lost Bag', status: 'Lost', icon: '👜' },
-        { id: 10, name: 'Found Shoes', status: 'Found', icon: '👟' },
-        { id: 11, name: 'Lost Watch', status: 'Lost', icon: '⌚' },
-        { id: 12, name: 'Found Hat', status: 'Found', icon: '🎩' },
-        { id: 13, name: 'Lost Wallet', status: 'Lost', icon: '👛' },
-        { id: 14, name: 'Found Phone', status: 'Found', icon: '📱' }
-      ];
-      
+  const items = [
+    { id: 2, name: 'ID Card', status: 'Lost and Found', icon: <FaWallet /> },
+    { id: 3, name: 'Found Notebook', status: 'Lost and Found', icon: <FaBook /> },
+    { id: 4, name: 'Lost Wallet', status: 'Lost and Found', icon: <FaWallet /> },
+    { id: 5, name: 'Found Watch', status: 'Lost and Found', icon: <MdWatch /> },
+    { id: 6, name: 'Lost Phone', status: 'Lost and Found', icon: <FaPhone /> },
+    { id: 7, name: 'Found Glasses', status: 'Lost and Found', icon: <FaGlasses /> },
+    { id: 8, name: 'Lost Keys', status: 'Lost and Found', icon: <FaKey /> },
+    { id: 9, name: 'Lost Bag', status: 'Lost and Found', icon: <IoBagCheckOutline /> },
+    { id: 11, name: 'Lost Watch', status: 'Lost and Found', icon: <MdWatch /> },
+    { id: 12, name: 'Found Hat', status: 'Lost and Found', icon: <FaHatCowboy /> },
+    { id: 13, name: 'Lost Wallet', status: 'Lost and Found', icon: <FaWallet /> },
+    { id: 14, name: 'Found Phone', status: 'Lost and Found', icon: <FaPhone /> }
+  ];
 
   return (
     <div className="h-screen bg-gray-200 flex flex-col">
@@ -48,6 +48,6 @@ const page = () => {
       <NavigationBar />
     </div>
   );
-}
+};
 
 export default page;
